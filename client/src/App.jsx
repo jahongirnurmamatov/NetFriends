@@ -18,10 +18,11 @@ import {
   Outlet,
   Navigate,
 } from "react-router-dom";
+import { AuthContext } from "./context/authContext";
 
 function App() {
-  const currentUser = true;
   const { darkMode } = useContext(DarkModeContext);
+  const {currentUser}=useContext(AuthContext)
 
   const Layout = () => {
     return (
