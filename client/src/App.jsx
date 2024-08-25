@@ -7,9 +7,17 @@ import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
 
 function App() {
+  const currentUser = true;
+
   const Layout = () => {
     return (
       <div className="">
@@ -22,10 +30,24 @@ function App() {
       </div>
     );
   };
+  const ProtectedRoute = ({ children }) => {
+    if (!currentUser) {
+      return <Navigate to={"/login"} />;
+    }
+    return children;
+  };
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id" element={<Profile />} />
         </Route>
