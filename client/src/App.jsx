@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import "./App.css";
 import LeftBar from "./components/leftbar/LeftBar";
 import Navbar from "./components/navbar/Navbar";
@@ -6,7 +7,10 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
-import { createRoot } from "react-dom/client";
+import {
+  DarkModeContext,
+} from "./context/darkModeContext";
+
 import {
   BrowserRouter,
   Routes,
@@ -17,14 +21,15 @@ import {
 
 function App() {
   const currentUser = true;
+  const { darkMode } = useContext(DarkModeContext);
 
   const Layout = () => {
     return (
-      <div className="theme-dark">
+      <div className={`theme-${darkMode ? "dark" : "light"}`}>
         <Navbar />
         <div style={{ display: "flex" }}>
           <LeftBar />
-          <div style={{flex:6}}>
+          <div style={{ flex: 6 }}>
             <Outlet />
           </div>
           <Rightbar />
@@ -32,6 +37,7 @@ function App() {
       </div>
     );
   };
+
   const ProtectedRoute = ({ children }) => {
     if (!currentUser) {
       return <Navigate to={"/login"} />;
@@ -40,23 +46,25 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/" element={<Home />} />
-          <Route path="/profile/:id" element={<Profile />} />
-        </Route>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/" element={<Home />} />
+            <Route path="/profile/:id" element={<Profile />} />
+          </Route>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+
   );
 }
 
