@@ -42,7 +42,6 @@
           background-color: transparent;
           color: themed("textColor");
           outline: none;
-
           @include mobile{
             display: none;
           }
