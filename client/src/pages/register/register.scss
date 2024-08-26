@@ -12,6 +12,7 @@
         border-radius: 10px;
         min-height: 600px;
         overflow: hidden;
+      
         .left{
             flex: 1;
             background: linear-gradient(rgba(39,11,96,0.5),rgba(39, 11, 96, 0.5) ) ,url("https://images.pexels.com/photos/853168/pexels-photo-853168.jpeg?auto=compress&cs=tinysrgb&w=600") center;
@@ -60,6 +61,9 @@
                     border-bottom: 1px solid lightgray;
                     padding: 20px 10px;
                     outline: none;
+                }
+                p{
+                    color: red;
                 }
                 button{
                     width: 50%;
