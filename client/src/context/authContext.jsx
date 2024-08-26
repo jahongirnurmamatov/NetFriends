@@ -8,8 +8,11 @@ export const AuthContextProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user")) || null
   );
 
-  const login = async() => {
-    const res = axios.post()
+  const login = async(inputs) => {
+    const res = await axios.post('http://localhost:8000/api/auth/login',inputs,{
+      withCredentials:true
+    });
+    setCurrentUser(res.data);
   };
 
   useEffect(() => {

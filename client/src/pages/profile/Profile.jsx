@@ -19,11 +19,11 @@ const Profile = () => {
     <div className="profile">
       <div className="images">
         <img
-          src="https://images.pexels.com/photos/316398/pexels-photo-316398.jpeg?auto=compress&cs=tinysrgb&w=600"
+          src={currentUser.cover||"/cover.jpg"}
           alt=""
           className="cover"
         />
-        <img src={currentUser.profilePic} alt="" className="profile" />
+        <img src={currentUser.profilePic||'/profile.png'} alt="" className="profile" />
       </div>
       <div className="profileContainer">
         <div className="uInfo">

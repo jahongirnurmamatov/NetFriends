@@ -1,3 +1,4 @@
+
 import "./leftbar.scss";
 import Friends from "../../assets/1.png";
 import Groups from "../../assets/2.png";
@@ -24,7 +25,7 @@ const LeftBar = () => {
         <div className="menu">
           <div className="user">
             <img
-              src={currentUser.profilePic}
+              src={currentUser.profilePic||'/profile.png'}
               alt=""
             />
             <span>{currentUser.name}</span>
