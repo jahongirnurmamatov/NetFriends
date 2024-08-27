@@ -11,60 +11,113 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useContext } from "react";
 import { AuthContext } from "../../context/authContext";
 import Posts from "../../components/posts/Posts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
+import { makeRequest } from "../../axios";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
+  const userId = parseInt(useLocation().pathname.split("/")[2]);
 
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["users"],
+    queryFn: () =>
+      makeRequest.get(`/users/find/${userId}`).then((res) => res.data),
+  });
+  const { data: relationshipData } = useQuery({
+    queryKey: ["relationships"],
+    queryFn: () =>
+      makeRequest
+        .get(`/relationships?followedUserId=${userId}`)
+        .then((res) => res.data),
+  });
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (isFollowing) => {
+      if(isFollowing){
+        makeRequest.delete("/relationships?userId="+userId);
+      }else{
+        makeRequest.post('/relationships?userId=?',{userId});
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["relationships"]);
+    },
+  });
+
+  const handleFollow = () => {
+    mutation.mutate(relationshipData.includes(currentUser.id));
+  };
   return (
     <div className="profile">
-      <div className="images">
-        <img
-          src={currentUser.cover||"/cover.jpg"}
-          alt=""
-          className="cover"
-        />
-        <img src={currentUser.profilePic||'/profile.png'} alt="" className="profile" />
-      </div>
-      <div className="profileContainer">
-        <div className="uInfo">
-          <div className="left">
-            <a href="http://facebook.com">
-              <FacebookTwoToneIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <InstagramIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <TwitterIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <LinkedInIcon fontSize="large" />
-            </a>
-            <a href="http://facebook.com">
-              <PinterestIcon fontSize="large" />
-            </a>
+      {isLoading ? (
+        "Loading...."
+      ) : (
+        <>
+          <div className="images">
+            <img src={data?.cover || "/cover.jpg"} alt="" className="cover" />
+            <img
+              src={data?.profilePic || "/profile.png"}
+              alt=""
+              className="profile"
+            />
           </div>
-          <div className="center">
-            <span>{currentUser.name}</span>
-            <div className="info">
-              <div className="item">
-                <PlaceIcon />
-                <span>USA</span>
+          <div className="profileContainer">
+            <div className="uInfo">
+              <div className="left">
+                <a href="http://facebook.com">
+                  <FacebookTwoToneIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <InstagramIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <TwitterIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <LinkedInIcon fontSize="large" />
+                </a>
+                <a href="http://facebook.com">
+                  <PinterestIcon fontSize="large" />
+                </a>
               </div>
-              <div className="item">
-                <LanguageIcon />
-                <span>kun.uz</span>
+              <div className="center">
+                <span>{data?.name}</span>
+                <div className="info">
+                  {data?.city && (
+                    <div className="item">
+                      <PlaceIcon />
+                      <span>{data.city}</span>
+                    </div>
+                  )}
+                  {data?.webiste && (
+                    <div className="item">
+                      <LanguageIcon />
+                      <span>{data.website}</span>
+                    </div>
+                  )}
+                </div>
+                {userId === currentUser.id ? (
+                  <button>Update</button>
+                ) : (
+                  <button onClick={handleFollow}>
+                    {relationshipData?.includes(currentUser.id)
+                      ? "Following"
+                      : "Follow"}
+                  </button>
+                )}
+              </div>
+              <div className="right">
+                <EmailOutlinedIcon />
+                <MoreVertIcon />
               </div>
             </div>
-            <button>Follow</button>
+            <Posts />
           </div>
-          <div className="right">
-            <EmailOutlinedIcon />
-            <MoreVertIcon />
-          </div>
-        </div>
-        <Posts />
-      </div>
+        </>
+      )}
     </div>
   );
 };

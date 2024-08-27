@@ -4,6 +4,8 @@ import postsRoutes from "./routes/posts.js";
 import likesRoutes from "./routes/likes.js";
 import authRoutes from "./routes/auth.js";
 import commentsRoutes from "./routes/comments.js";
+import relationsRoutes from "./routes/relationship.js";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { upload } from "./multer.js";
@@ -28,6 +30,7 @@ app.use("/api/posts", postsRoutes);
 app.use("/api/likes", likesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/comments", commentsRoutes);
+app.use("/api/relationships", relationsRoutes);
 
 //uploading image
 app.post('/api/upload',upload.single('file'),(req,res)=>{
