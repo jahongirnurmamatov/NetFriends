@@ -8,15 +8,17 @@ import PlaceIcon from "@mui/icons-material/Place";
 import LanguageIcon from "@mui/icons-material/Language";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import Posts from "../../components/posts/Posts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { makeRequest } from "../../axios";
+import Update from "../../components/update/Update";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
+  const [openUpdate,setOpenUpdate]=useState(false);
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isLoading, error, data } = useQuery({
@@ -100,7 +102,7 @@ const Profile = () => {
                   )}
                 </div>
                 {userId === currentUser.id ? (
-                  <button>Update</button>
+                  <button onClick={()=>setOpenUpdate(true)}>Update</button>
                 ) : (
                   <button onClick={handleFollow}>
                     {relationshipData?.includes(currentUser.id)
@@ -118,6 +120,7 @@ const Profile = () => {
           </div>
         </>
       )}
+      {openUpdate && <Update setOpenUpdate={setOpenUpdate} />}
     </div>
   );
 };
