@@ -18,7 +18,7 @@ import Update from "../../components/update/Update";
 
 const Profile = () => {
   const { currentUser } = useContext(AuthContext);
-  const [openUpdate,setOpenUpdate]=useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
   const userId = parseInt(useLocation().pathname.split("/")[2]);
 
   const { isLoading, error, data } = useQuery({
@@ -26,6 +26,7 @@ const Profile = () => {
     queryFn: () =>
       makeRequest.get(`/users/find/${userId}`).then((res) => res.data),
   });
+
   const { data: relationshipData } = useQuery({
     queryKey: ["relationships"],
     queryFn: () =>
@@ -38,10 +39,10 @@ const Profile = () => {
 
   const mutation = useMutation({
     mutationFn: (isFollowing) => {
-      if(isFollowing){
-        makeRequest.delete("/relationships?userId="+userId);
-      }else{
-        makeRequest.post('/relationships?userId=?',{userId});
+      if (isFollowing) {
+        makeRequest.delete("/relationships?userId=" + userId);
+      } else {
+        makeRequest.post("/relationships", { userId });
       }
     },
     onSuccess: () => {
@@ -52,6 +53,7 @@ const Profile = () => {
   const handleFollow = () => {
     mutation.mutate(relationshipData.includes(currentUser.id));
   };
+
   return (
     <div className="profile">
       {isLoading ? (
@@ -94,7 +96,7 @@ const Profile = () => {
                       <span>{data.city}</span>
                     </div>
                   )}
-                  {data?.webiste && (
+                  {data?.website && (
                     <div className="item">
                       <LanguageIcon />
                       <span>{data.website}</span>
@@ -102,7 +104,7 @@ const Profile = () => {
                   )}
                 </div>
                 {userId === currentUser.id ? (
-                  <button onClick={()=>setOpenUpdate(true)}>Update</button>
+                  <button onClick={() => setOpenUpdate(true)}>Update</button>
                 ) : (
                   <button onClick={handleFollow}>
                     {relationshipData?.includes(currentUser.id)
@@ -120,6 +122,7 @@ const Profile = () => {
           </div>
         </>
       )}
+      {/* Ensure the modal is only rendered if openUpdate is true */}
       {openUpdate && <Update setOpenUpdate={setOpenUpdate} />}
     </div>
   );

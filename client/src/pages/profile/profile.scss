@@ -1,4 +1,28 @@
 @import "../../style.scss";
+
+.undefined{
+  @include themify($themes) {
+  padding: 150px 100px;
+  background-color: themed("bgSoft");
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: themed("textColor");
+  .image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+      width: 200px;
+      height: auto;
+    }
+  }
+}}
+
 .profile {
   @include themify($themes) {
     background-color: themed("bgSoft");
